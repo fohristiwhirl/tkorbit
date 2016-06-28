@@ -195,11 +195,14 @@ class Virtue(tkinter.Canvas):
             self.load(filename)
 
     def save(self, filename):
-        with open(filename, "w") as outfile:
-            for b in self.bodies:
-                outfile.write(b.__str__())
-                outfile.write("\n")
-        print("Saved {}".format(filename))
+        try:
+            with open(filename, "w") as outfile:
+                for b in self.bodies:
+                    outfile.write(b.__str__())
+                    outfile.write("\n")
+            print("Saved {}".format(filename))
+        except:
+            print("Failed to save {}".format(filename))
 
     def saver(self):
         filename = tkinter.filedialog.asksaveasfilename(defaultextension = ".txt")
