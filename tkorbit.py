@@ -19,12 +19,21 @@ class Root(tkinter.Tk):
         menubar.add_cascade(label = "File", menu = file_menu)
 
         delay_menu = tkinter.Menu(menubar, tearoff = 0)
-        delay_menu.add_radiobutton(label = "1", variable = virtue.delay, value = 1)
-        delay_menu.add_radiobutton(label = "5", variable = virtue.delay, value = 5)
-        delay_menu.add_radiobutton(label = "10", variable = virtue.delay, value = 10)
-        delay_menu.add_radiobutton(label = "20", variable = virtue.delay, value = 20)
-        delay_menu.add_radiobutton(label = "40", variable = virtue.delay, value = 40)
+        delay_menu.add_radiobutton(label = "2", variable = virtue.delay, value = 2)
+        delay_menu.add_radiobutton(label = "4", variable = virtue.delay, value = 4)
+        delay_menu.add_radiobutton(label = "8", variable = virtue.delay, value = 8)
+        delay_menu.add_radiobutton(label = "16", variable = virtue.delay, value = 16)
+        delay_menu.add_radiobutton(label = "32", variable = virtue.delay, value = 32)
         menubar.add_cascade(label = "Delay", menu = delay_menu)
+
+        speed_menu = tkinter.Menu(menubar, tearoff = 0)
+        speed_menu.add_radiobutton(label = "32", variable = virtue.speed, value = 32)
+        speed_menu.add_radiobutton(label = "16", variable = virtue.speed, value = 16)
+        speed_menu.add_radiobutton(label = "8", variable = virtue.speed, value = 8)
+        speed_menu.add_radiobutton(label = "4", variable = virtue.speed, value = 4)
+        speed_menu.add_radiobutton(label = "2", variable = virtue.speed, value = 2)
+        speed_menu.add_radiobutton(label = "1", variable = virtue.speed, value = 1)
+        menubar.add_cascade(label = "Speed", menu = speed_menu)
 
         view_menu = tkinter.Menu(menubar, tearoff = 0)
         view_menu.add_radiobutton(label = "Polar", variable = virtue.planar, value = 0)
@@ -87,7 +96,10 @@ class Virtue(tkinter.Canvas):
         self.owner = owner
 
         self.age = 0
-        self.delay = tkinter.IntVar(value = 5)
+
+        self.delay = tkinter.IntVar(value = 4)
+        self.speed = tkinter.IntVar(value = 1)
+
         self.planar = tkinter.IntVar(value = 0)
 
         self.camera_x = 0
@@ -143,7 +155,8 @@ class Virtue(tkinter.Canvas):
 
     def iterate(self):
 
-        self.move_stuff(Body.gravitate_3d, Body.move_3d)
+        for n in range(self.speed.get()):
+            self.move_stuff(Body.gravitate_3d, Body.move_3d)
         self.draw()
         self.after(self.delay.get(), self.iterate)
 

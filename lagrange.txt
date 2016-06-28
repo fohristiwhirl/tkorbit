@@ -1,0 +1,5 @@
+Demonstrates an asteroid at the L4 (or is it L5) point
+
+"Sun" 0 0 0 0 0 0 3333 yellow
+"Planet" -780 0 0 0 -2.1 0 10 blue
+"Trojan" -390 -675.5 0 1.818653 -1.05 0 0.08 gray

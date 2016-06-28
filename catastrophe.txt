@@ -1,0 +1,11 @@
+After a few years, everything goes bad (maybe run at high speed)
+
+"Sol"       0 0 0       0 0 0       33      yellow
+"Mercury"   0 -100 0    0.6 0 0     0.5     red
+"Venus"     0 200 0     -0.39 0 0   0.5     orange
+"Earth"     -800 0 0    0 -0.23 0   1       green
+"Luna"      -860 0 0    0 -0.09 0   0.02    gray
+"Jupiter"   2000 0 0    0 0.13 0    5       red
+"Io"        2050 0 0    0 0.43 0    0.02    gray
+"Europa"    1900 0 0    0 -0.1 0    0.02    gray
+"Ganymede"  2200 0 0    0 0.3 0     0.02    gray
