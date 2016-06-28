@@ -1,4 +1,4 @@
-import math, tkinter
+import math, re, tkinter, tkinter.filedialog
 
 WIDTH = 1024
 HEIGHT = 768
@@ -14,15 +14,15 @@ class Root(tkinter.Tk):
         menubar = tkinter.Menu(self)
 
         file_menu = tkinter.Menu(menubar, tearoff = 0)
-        file_menu.add_command(label = "Open (Fixme)", command = lambda : None)
-        file_menu.add_command(label = "Save (Fixme)", command = lambda : None)
+        file_menu.add_command(label = "Open", command = virtue.loader)
+        file_menu.add_command(label = "Save As", command = virtue.saver)
         menubar.add_cascade(label = "File", menu = file_menu)
 
         delay_menu = tkinter.Menu(menubar, tearoff = 0)
         delay_menu.add_radiobutton(label = "5", variable = virtue.delay, value = 5)
         delay_menu.add_radiobutton(label = "10", variable = virtue.delay, value = 10)
-        delay_menu.add_radiobutton(label = "15", variable = virtue.delay, value = 15)
         delay_menu.add_radiobutton(label = "20", variable = virtue.delay, value = 20)
+        delay_menu.add_radiobutton(label = "40", variable = virtue.delay, value = 40)
         menubar.add_cascade(label = "Delay", menu = delay_menu)
 
         view_menu = tkinter.Menu(menubar, tearoff = 0)
@@ -66,6 +66,19 @@ class Body():
         self.y += self.speedy
         self.z += self.speedz
 
+    def __str__(self):
+        return "\"{}\" {} {} {} {} {} {} {} {}".format(
+            self.name,
+            self.x,
+            self.y,
+            self.z,
+            self.speedx,
+            self.speedy,
+            self.speedz,
+            self.mass,
+            self.colour
+        )
+
 
 class Virtue(tkinter.Canvas):
     def __init__(self, owner, *args, **kwargs):
@@ -84,22 +97,9 @@ class Virtue(tkinter.Canvas):
 
         self.bodies = []
 
-        self.bodies.append(Body([0,0,0], [0,0,0], 3333, name = "Sun", colour = "yellow"))
-        self.bodies.append(Body([0,-100,0], [6,0,0], 5, name = "Mercury"))
-        self.bodies.append(Body([0,200,0], [-4,0,0], 5, name = "Venus"))
-        self.bodies.append(Body([-780,0,0], [0,-2.1,0], 10, name = "Earth", colour = "green"))
-        self.bodies.append(Body([-840,0,0], [0,-1.67,0], 0.08, name = "Luna",  colour = "gray"))
-        # Mars died
-        self.bodies.append(Body([2000,0,0], [0,1.29,0], 120, name = "Jupiter"))
-        self.bodies.append(Body([2050,0,0], [0,2.85,0], 0.04, name = "Io", colour = "gray"))
-        self.bodies.append(Body([1880,0,0], [0,0.3,0], 0.04, name = "Europa", colour = "gray"))
-        self.bodies.append(Body([-2200,2200,0], [-0.749,-0.749,0], 30, name = "Saturn"))
-        self.bodies.append(Body([-2300,2300,0], [-1.1,-1.1,0], 0.02, name = "Titan", colour = "gray"))
-
-        self.lock = self.bodies[0]
+        self.load("default.txt")
 
         self.iterate()
-
 
     def move_stuff(self, gravitate_func, move_func):
 
@@ -130,7 +130,7 @@ class Virtue(tkinter.Canvas):
             screeny = dz + HEIGHT / 2
         else:
             screeny = dy + HEIGHT / 2
-        return (screenx, screeny)
+        return (int(screenx), int(screeny))
 
     def draw(self):
         self.delete(tkinter.ALL)    # DESTROY all! Perhaps instead we should move the objects already present, hmm...?
@@ -145,6 +145,66 @@ class Virtue(tkinter.Canvas):
         self.move_stuff(Body.gravitate_3d, Body.move_3d)
         self.draw()
         self.after(self.delay.get(), self.iterate)
+
+    def load(self, filename):
+
+        print("Loading {}".format(filename))
+
+        newbodies = []
+
+        try:
+            with open(filename) as infile:
+                for n, line in enumerate(infile):
+                    extract = re.search(r'\"(.+)\" (\S+) (\S+) (\S+) (\S+) (\S+) (\S+) (\S+) (\S+)', line)
+                    try:
+                        name = extract.group(1)
+                        x = extract.group(2)
+                        y = extract.group(3)
+                        z = extract.group(4)
+                        speedx = extract.group(5)
+                        speedy = extract.group(6)
+                        speedz = extract.group(7)
+                        mass = extract.group(8)
+                        colour = extract.group(9)
+
+                        body = Body(
+                               pos = [float(x), float(y), float(z)],
+                               speed = [float(speedx), float(speedy), float(speedz)],
+                               mass = float(mass),
+                               name = name,
+                               colour = colour
+                               )
+
+                        newbodies.append(body)
+                    except:
+                        if not line.isspace():
+                            print("Ignored #{}:  {}".format(n, line))
+        except:
+            print("Failed to load {}".format(filename))
+
+        self.bodies = newbodies
+
+        if len(self.bodies):
+            self.lock = self.bodies[0]
+        else:
+            self.lock = None
+
+    def loader(self):
+        filename = tkinter.filedialog.askopenfilename()
+        if filename:
+            self.load(filename)
+
+    def save(self, filename):
+        with open(filename, "w") as outfile:
+            for b in self.bodies:
+                outfile.write(b.__str__())
+                outfile.write("\n")
+        print("Saved {}".format(filename))
+
+    def saver(self):
+        filename = tkinter.filedialog.asksaveasfilename(defaultextension = ".txt")
+        if filename:
+            self.save(filename)
 
 
 if __name__ == "__main__":
