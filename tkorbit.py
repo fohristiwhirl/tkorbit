@@ -19,6 +19,7 @@ class Root(tkinter.Tk):
         menubar.add_cascade(label = "File", menu = file_menu)
 
         delay_menu = tkinter.Menu(menubar, tearoff = 0)
+        delay_menu.add_radiobutton(label = "1", variable = virtue.delay, value = 1)
         delay_menu.add_radiobutton(label = "5", variable = virtue.delay, value = 5)
         delay_menu.add_radiobutton(label = "10", variable = virtue.delay, value = 10)
         delay_menu.add_radiobutton(label = "20", variable = virtue.delay, value = 20)
@@ -155,7 +156,7 @@ class Virtue(tkinter.Canvas):
         try:
             with open(filename) as infile:
                 for n, line in enumerate(infile):
-                    extract = re.search(r'\"(.+)\" (\S+) (\S+) (\S+) (\S+) (\S+) (\S+) (\S+) (\S+)', line)
+                    extract = re.search(r'\"(.+)\"\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)', line)
                     try:
                         name = extract.group(1)
                         x = extract.group(2)
