@@ -56,6 +56,20 @@ class Body():
         self.name = name
         self.colour = colour
 
+    def gravitate_2d(self, other):
+        dx = other.x - self.x
+        dy = other.y - self.y
+        distance_squared = dx * dx + dy * dy
+        distance = math.sqrt(distance_squared)
+        try:
+            # This is now very optimised and isn't intuitive at all...
+            # (I hope it's right)
+            adjusted_force = other.mass / (distance_squared * distance)
+            self.speedx += dx * adjusted_force
+            self.speedy += dy * adjusted_force
+        except ZeroDivisionError:
+            pass
+
     def gravitate_3d(self, other):
         dx = other.x - self.x
         dy = other.y - self.y
@@ -64,12 +78,17 @@ class Body():
         distance = math.sqrt(distance_squared)
         try:
             # This is now very optimised and isn't intuitive at all...
+            # (I hope it's right)
             adjusted_force = other.mass / (distance_squared * distance)
             self.speedx += dx * adjusted_force
             self.speedy += dy * adjusted_force
             self.speedz += dz * adjusted_force
         except ZeroDivisionError:
             pass
+
+    def move_2d(self):
+        self.x += self.speedx
+        self.y += self.speedy
 
     def move_3d(self):
         self.x += self.speedx
@@ -107,6 +126,7 @@ class Virtue(tkinter.Canvas):
         self.camera_z = 0
         self.zoom = 0.15
         self.lock = None
+        self.world_is_2d = False
 
         self.bodies = []
 
@@ -154,11 +174,21 @@ class Virtue(tkinter.Canvas):
             self.create_oval(screenx - 2, screeny - 2, screenx + 2, screeny + 2, fill = b.colour)
 
     def iterate(self):
-
-        for n in range(self.speed.get()):
-            self.move_stuff(Body.gravitate_3d, Body.move_3d)
+        if self.world_is_2d:
+            for n in range(self.speed.get()):
+                self.move_stuff(Body.gravitate_2d, Body.move_2d)
+        else:
+            for n in range(self.speed.get()):
+                self.move_stuff(Body.gravitate_3d, Body.move_3d)
         self.draw()
         self.after(self.delay.get(), self.iterate)
+
+    def set_world_dimension(self):
+        self.world_is_2d = False
+        for b in self.bodies:
+            if b.z != 0 or b.speedz != 0:
+                return
+        self.world_is_2d = True
 
     def load(self, filename):
 
@@ -197,6 +227,7 @@ class Virtue(tkinter.Canvas):
             print("Failed to load {}".format(filename))
 
         self.bodies = newbodies
+        self.set_world_dimension()          # Must happen after self.bodies is set
 
         if len(self.bodies):
             self.lock = self.bodies[0]
