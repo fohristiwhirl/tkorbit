@@ -1,0 +1,5 @@
+Vaguely resembling the Alpha Centauri system
+
+"Alpha" 0 -150 0 2 0 0 3333 yellow
+"Beta"  0 150 0 -2 0 0 3333 yellow
+"Proxima" -780 0 0 0 -3 0 150 orange

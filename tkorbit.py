@@ -56,6 +56,8 @@ class Root(tkinter.Tk):
         virtue.pack()
 
         self.bind("<Tab>", virtue.cycle_lock)
+        self.bind("<Control-o>", virtue.loader)
+        self.bind("<Control-s>", virtue.saver)
 
 
 class Body():
@@ -243,13 +245,9 @@ class Virtue(tkinter.Canvas):
 
         self.bodies = newbodies
         self.set_world_dimension()          # Must happen after self.bodies is set
+        self.lock = None
 
-        if len(self.bodies):
-            self.lock = self.bodies[0]
-        else:
-            self.lock = None
-
-    def loader(self):
+    def loader(self, *args):
         filename = tkinter.filedialog.askopenfilename()
         if filename:
             self.load(filename)
@@ -264,7 +262,7 @@ class Virtue(tkinter.Canvas):
         except:
             print("Failed to save {}".format(filename))
 
-    def saver(self):
+    def saver(self, *args):
         filename = tkinter.filedialog.asksaveasfilename(defaultextension = ".txt")
         if filename:
             self.save(filename)
