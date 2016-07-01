@@ -39,6 +39,7 @@ class Root(tkinter.Tk):
         view_menu.add_radiobutton(label = "Polar", variable = virtue.planar, value = 0)
         view_menu.add_radiobutton(label = "Planar", variable = virtue.planar, value = 1)
         view_menu.add_separator()
+        view_menu.add_command(label = "Lock Next", command = virtue.cycle_lock)
         view_menu.add_command(label = "Unlock", command = virtue.unlock)
         menubar.add_cascade(label = "View", menu = view_menu)
 
@@ -274,7 +275,7 @@ class Virtue(tkinter.Canvas):
         else:
             self.owner.wm_title("tkorbit (no lock)")
 
-    def cycle_lock(self, event):
+    def cycle_lock(self, *args):
 
         if len(self.bodies) == 0:
             self.lock = None
