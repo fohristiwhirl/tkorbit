@@ -38,10 +38,23 @@ class Root(tkinter.Tk):
         view_menu = tkinter.Menu(menubar, tearoff = 0)
         view_menu.add_radiobutton(label = "Polar", variable = virtue.planar, value = 0)
         view_menu.add_radiobutton(label = "Planar", variable = virtue.planar, value = 1)
+        view_menu.add_separator()
+        view_menu.add_command(label = "Unlock", command = virtue.unlock)
         menubar.add_cascade(label = "View", menu = view_menu)
+
+        zoom_menu = tkinter.Menu(menubar, tearoff = 0)
+        zoom_menu.add_radiobutton(label = "0.08", variable = virtue.zoom, value = 0.08)
+        zoom_menu.add_radiobutton(label = "0.15", variable = virtue.zoom, value = 0.15)
+        zoom_menu.add_radiobutton(label = "0.33", variable = virtue.zoom, value = 0.33)
+        zoom_menu.add_radiobutton(label = "0.5", variable = virtue.zoom, value = 0.5)
+        zoom_menu.add_radiobutton(label = "1", variable = virtue.zoom, value = 1.0)
+        zoom_menu.add_radiobutton(label = "2", variable = virtue.zoom, value = 2.0)
+        menubar.add_cascade(label = "Zoom", menu = zoom_menu)
 
         self.config(menu = menubar)
         virtue.pack()
+
+        self.bind("<Tab>", virtue.cycle_lock)
 
 
 class Body():
@@ -124,13 +137,14 @@ class Virtue(tkinter.Canvas):
         self.camera_x = 0
         self.camera_y = 0
         self.camera_z = 0
-        self.zoom = 0.15
+        self.zoom = tkinter.DoubleVar(value = 0.15)
         self.lock = None
         self.world_is_2d = False
 
         self.bodies = []
 
         self.load("default.txt")
+        self.update_title()
 
         self.iterate()
 
@@ -155,9 +169,9 @@ class Virtue(tkinter.Canvas):
         dx = body.x - self.camera_x
         dy = body.y - self.camera_y
         dz = body.z - self.camera_z
-        dx *= self.zoom
-        dy *= self.zoom
-        dz *= self.zoom
+        dx *= self.zoom.get()
+        dy *= self.zoom.get()
+        dz *= self.zoom.get()
         screenx = dx + WIDTH / 2
         if self.planar.get():
             screeny = dz + HEIGHT / 2
@@ -253,6 +267,30 @@ class Virtue(tkinter.Canvas):
         filename = tkinter.filedialog.asksaveasfilename(defaultextension = ".txt")
         if filename:
             self.save(filename)
+
+    def update_title(self):
+        if self.lock:
+            self.owner.wm_title("tkorbit: {}".format(self.lock.name))
+        else:
+            self.owner.wm_title("tkorbit (no lock)")
+
+    def cycle_lock(self, event):
+
+        if len(self.bodies) == 0:
+            self.lock = None
+        elif self.lock is None:
+            self.lock = self.bodies[0]
+        elif self.lock is self.bodies[len(self.bodies) - 1]:
+            self.lock = self.bodies[0]
+        else:
+            index = self.bodies.index(self.lock)
+            self.lock = self.bodies[index + 1]
+
+        self.update_title()
+
+    def unlock(self):
+        self.lock = None
+        self.update_title()
 
 
 if __name__ == "__main__":
