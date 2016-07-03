@@ -147,7 +147,6 @@ class Virtue(tkinter.Canvas):
         self.bodies = []
 
         self.load("default.txt")
-        self.update_title()
 
         self.iterate()
 
@@ -245,7 +244,9 @@ class Virtue(tkinter.Canvas):
 
         self.bodies = newbodies
         self.set_world_dimension()          # Must happen after self.bodies is set
+        self.reset_camera()
         self.lock = None
+        self.update_title()
 
     def loader(self, *args):
         filename = tkinter.filedialog.askopenfilename()
@@ -290,6 +291,11 @@ class Virtue(tkinter.Canvas):
     def unlock(self):
         self.lock = None
         self.update_title()
+
+    def reset_camera(self):
+        self.camera_x = 0
+        self.camera_y = 0
+        self.camera_z = 0
 
 
 if __name__ == "__main__":
