@@ -1,4 +1,4 @@
-import math, re, tkinter, tkinter.filedialog
+import math, re, sys, tkinter, tkinter.filedialog
 
 WIDTH = 1024
 HEIGHT = 768
@@ -146,7 +146,10 @@ class Virtue(tkinter.Canvas):
 
         self.bodies = []
 
-        self.load("default.txt")
+        if len(sys.argv) > 1:
+            self.load(sys.argv[1])
+        else:
+            self.load("default.txt")
 
         self.iterate()
 
