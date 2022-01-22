@@ -1,4 +1,4 @@
 # tkorbit
 Newtonian orbiter in tkinter (Python 3)
 
-Simple Newtonian mechanics simulator written ages ago.
+Simple Newtonian mechanics simulator written ages ago
