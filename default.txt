@@ -7,7 +7,7 @@
 "Earth" -780 0 0 0 -2.1 0 10 green
 "Luna" -840 0 0 0 -1.67 0 0.08 gray
 
-(Mars died)
+(Mars died. Sad!)
 
 "Jupiter" 2000 0 0 0 1.29 0 120 red
 "Io" 2050 0 0 0 2.85 0 0.04 gray
