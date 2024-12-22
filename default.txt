@@ -1,4 +1,4 @@
-"Sun" 0 0 0 0 0 0 3333 yellow
+"Sun" 0 0 0 0 0 0 3334 yellow
 
 "Mercury" 0 -100 0 6 0 0 5 red
 
